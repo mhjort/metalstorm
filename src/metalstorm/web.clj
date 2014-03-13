@@ -7,21 +7,26 @@
             [ring.middleware.stacktrace :as trace]
             [ring.middleware.session :as session]
             [ring.middleware.session.cookie :as cookie]
+            [ring.util.json-response :as json-response]
             [ring.util.response :as response]
             [ring.adapter.jetty :as jetty]
             [cemerick.drawbridge :as drawbridge]
+            [cheshire.core :as json]
             [environ.core :refer [env]]))
 
 (def ^:private drawbridge
   (-> (drawbridge/ring-handler)
       (session/wrap-session)))
 
+(defn- run-simulation [params]
+  params)
+
 (defroutes app
   (ANY "/repl" {:as req}
        (drawbridge req))
   (resources "/resources/")
   (GET "/*" [] (:body (response/resource-response "index.html" {:root "public"})))
-
+  (POST "/api/runSimulation/" {body :body} (json-response/json-response (run-simulation (json/parse-string (slurp body) true))))
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
 
