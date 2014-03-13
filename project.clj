@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [compojure "1.1.1"]
                  [ring "1.1.8"]
+                 [ring-json-response "0.2.0"]
                  [environ "0.2.1"]
                  [com.cemerick/drawbridge "0.0.6"]]
   :min-lein-version "2.0.0"
