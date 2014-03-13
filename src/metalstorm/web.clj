@@ -1,4 +1,5 @@
 (ns metalstorm.web
+  (:use [compojure.route :only [resources not-found]])
   (:require [compojure.core :refer [defroutes GET PUT POST DELETE ANY]]
             [compojure.handler :refer [site]]
             [compojure.route :as route]
@@ -6,6 +7,7 @@
             [ring.middleware.stacktrace :as trace]
             [ring.middleware.session :as session]
             [ring.middleware.session.cookie :as cookie]
+            [ring.util.response :as response]
             [ring.adapter.jetty :as jetty]
             [cemerick.drawbridge :as drawbridge]
             [environ.core :refer [env]]))
@@ -17,10 +19,9 @@
 (defroutes app
   (ANY "/repl" {:as req}
        (drawbridge req))
-  (GET "/" []
-       {:status 200
-        :headers {"Content-Type" "text/plain"}
-        :body (pr-str ["Hello" :from 'Heroku])})
+  (resources "/resources/")
+  (GET "/*" [] (:body (response/resource-response "index.html" {:root "public"})))
+
   (ANY "*" []
        (route/not-found (slurp (io/resource "404.html")))))
 
