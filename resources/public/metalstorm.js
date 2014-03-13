@@ -2,8 +2,8 @@
 $(document).ready(function() {
   $('#run').on('click', function() {
     console.log('Running simulation')
-    runSimulation({ url: 'http://www.google.fi',
-	  	    users: '5'},
+    runSimulation({ url: $('#url').val(),
+	  	    users: $('#users').val() },
 		  function(data) {console.log('Success', data)})
   })
 
