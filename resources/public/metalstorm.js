@@ -1,10 +1,14 @@
 
 $(document).ready(function() {
+  $('#results').hide()
   $('#run').on('click', function() {
     console.log('Running simulation')
     runSimulation({ url: $('#url').val(),
 	  	    users: $('#users').val() },
-		  function(data) {console.log('Success', data)})
+		  function(data) {
+		    console.log('Success', data)
+		    $('#results').fadeIn().fadeOut().fadeIn() 
+		  })
   })
 
   function runSimulation(data, success) {

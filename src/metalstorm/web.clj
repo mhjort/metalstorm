@@ -12,23 +12,36 @@
             [ring.adapter.jetty :as jetty]
             [cemerick.drawbridge :as drawbridge]
             [cheshire.core :as json]
+            [clj-gatling.core :as gatling]
+            [org.httpkit.client :as http]
             [environ.core :refer [env]]))
 
 (def ^:private drawbridge
   (-> (drawbridge/ring-handler)
       (session/wrap-session)))
 
+(defn http-request [url user-id]
+    (let [{:keys [status headers body error] :as resp} @(http/get url)]
+          (= 200 status)))
+
+(defn- create-http-scenario [url]
+    {:name "Test scenario"
+        :requests [{:name "Request url" :fn (partial http-request url)}]})
+
 (defn- run-simulation [params]
   (let [users (read-string (:users params))
         url (:url params)]
     (if (> users 10)
       { :error "Max number of users is currently 10" }
-      params)))
+      (do 
+        (gatling/run-simulation [(create-http-scenario url)] users)
+        {:success "woohoo"}))))
 
 (defroutes app
   (ANY "/repl" {:as req}
        (drawbridge req))
   (resources "/resources/")
+  (route/files "/results/" {:root "target/results/output"})
   (GET "/*" [] (:body (response/resource-response "index.html" {:root "public"})))
   (POST "/api/runSimulation/" {body :body} (json-response/json-response (run-simulation (json/parse-string (slurp body) true))))
   (ANY "*" []
