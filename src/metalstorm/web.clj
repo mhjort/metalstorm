@@ -19,7 +19,11 @@
       (session/wrap-session)))
 
 (defn- run-simulation [params]
-  params)
+  (let [users (read-string (:users params))
+        url (:url params)]
+    (if (> users 10)
+      { :error "Max number of users is currently 10" }
+      params)))
 
 (defroutes app
   (ANY "/repl" {:as req}
