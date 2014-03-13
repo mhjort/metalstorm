@@ -34,14 +34,14 @@
     (if (> users 10)
       { :error "Max number of users is currently 10" }
       (do 
-        (gatling/run-simulation [(create-http-scenario url)] users)
+        (gatling/run-simulation [(create-http-scenario url)] users {:root "tmp"})
         {:success "woohoo"}))))
 
 (defroutes app
   (ANY "/repl" {:as req}
        (drawbridge req))
   (resources "/resources/")
-  (route/files "/results/" {:root "target/results/output"})
+  (route/files "/results/" {:root "tmp/output"})
   (GET "/*" [] (:body (response/resource-response "index.html" {:root "public"})))
   (POST "/api/runSimulation/" {body :body} (json-response/json-response (run-simulation (json/parse-string (slurp body) true))))
   (ANY "*" []
