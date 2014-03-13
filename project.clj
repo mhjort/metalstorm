@@ -9,7 +9,7 @@
                  [http-kit "2.1.16"]
                  [ring-json-response "0.2.0"]
                  [environ "0.2.1"]
-                 [clj-gatling "0.0.3"]
+                 [clj-gatling "0.0.4"]
                  [com.cemerick/drawbridge "0.0.6"]]
   :min-lein-version "2.0.0"
   :plugins [[environ/environ.lein "0.2.1"]]
